@@ -37,23 +37,28 @@ upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
 # 자동매매 시작
+market_name = "KRW-ETH"
+coin_name = "ETH"
+k = 0.1
+fee = 0.0005
+min_order_cost = 5000
 while True:
     try:
         now = datetime.datetime.now()
-        start_time = get_start_time("KRW-BTC")
+        start_time = get_start_time(market_name)
         end_time = start_time + datetime.timedelta(days=1)
 
         if start_time < now < end_time - datetime.timedelta(seconds=10):
-            target_price = get_target_price("KRW-BTC", 0.5)
-            current_price = get_current_price("KRW-BTC")
+            target_price = get_target_price(market_name, k)
+            current_price = get_current_price(market_name)
             if target_price < current_price:
-                krw = get_balance("KRW")
-                if krw > 5000:
-                    upbit.buy_market_order("KRW-BTC", krw*0.9995)
+                krw_amount = get_balance("KRW")
+                if krw_amount > min_order_cost:
+                    upbit.buy_market_order(market_name, krw_amount*(1-fee))
         else:
-            btc = get_balance("BTC")
-            if btc > 0.00008:
-                upbit.sell_market_order("KRW-BTC", btc*0.9995)
+            my_coin_total_price = get_balance(coin_name) * get_current_price(market_name)
+            if my_coin_total_price > min_order_cost:
+                upbit.sell_market_order(market_name, get_balance(coin_name)*(1-fee))
         time.sleep(1)
     except Exception as e:
         print(e)
