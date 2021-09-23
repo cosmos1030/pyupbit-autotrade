@@ -39,7 +39,7 @@ print("autotrade start")
 # 자동매매 시작
 market_name = "KRW-ETH"
 coin_name = "ETH"
-k = 0.1
+k = 0.5
 fee = 0.0005
 min_order_cost = 5000
 while True:
